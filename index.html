@@ -10,9 +10,12 @@
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     @media print {
-      body { background: white !important; }
-      header, #formContainer, #actionButtons, #apiConfigPanel { display: none !important; }
-      #resultCard { display: block !important; border: 1px solid #ccc !important; box-shadow: none !important; }
+      body { background: white !important; font-size: 12px !important; }
+      header, #formContainer, #actionButtons, #apiConfigPanel, footer { display: none !important; }
+      main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
+      #resultCard { display: block !important; border: 1px solid #ccc !important; box-shadow: none !important; padding: 10px !important; }
+      .print-break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
+      #reportEvidenceImages img { max-height: 220px !important; object-fit: contain !important; }
     }
     .grid-matrix-cell { transition: all 0.2s ease-in-out; }
   </style>
@@ -29,7 +32,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="font-extrabold tracking-wider text-base bg-gradient-to-r from-blue-400 to-indigo-200 bg-clip-text text-transparent">SmartOSH System</span>
-            <span class="text-[10px] bg-indigo-900/80 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700">v3.8 Clean UI</span>
+            <span class="text-[10px] bg-indigo-900/80 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700">v3.9 Report Pro</span>
           </div>
           <p class="text-xs text-slate-400">現場危害辨識・風險矩陣量化・控制層級對策自動化</p>
         </div>
@@ -50,7 +53,7 @@
   <!-- 主內容容器 -->
   <main class="max-w-6xl mx-auto px-4 py-8 space-y-6 flex-1 w-full">
 
-    <!-- API Key 配置卡片（瀏覽器本地自動記憶） -->
+    <!-- API Key 配置卡片 -->
     <div id="apiConfigPanel" class="hidden bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
       <div class="flex justify-between items-center">
         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
@@ -67,7 +70,7 @@
         </button>
       </div>
       <p class="text-[11px] text-slate-500">
-        💡 金鑰僅儲存於您個人的本機瀏覽器（localStorage），不會外洩。若留空，系統亦可調用內建模擬題庫展示。
+        💡 金鑰僅儲存於您個人的本機瀏覽器（localStorage），不會外洩。
       </p>
     </div>
 
@@ -98,13 +101,13 @@
           </label>
           <input type="text" id="caseName" placeholder="例：A廠區物流倉儲作業例行巡檢"
             class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400">
-          <p class="text-[11px] text-slate-400">輸入本次風險評估專案或巡檢任務名稱（上限 200 字）</p>
+          <p class="text-[11px] text-slate-400">輸入本次風險評估專案或巡檢任務名稱</p>
         </div>
         <div class="space-y-1.5">
           <label class="block text-xs font-bold text-slate-800">作業地點</label>
           <input type="text" id="workLocation" placeholder="例：新竹廠第二物流中心 1F 裝卸與主要庫區"
             class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400">
-          <p class="text-[11px] text-slate-400">明確標示所屬廠區、樓層、機台或作業動線（上限 300 字）</p>
+          <p class="text-[11px] text-slate-400">明確標示所屬廠區、樓層、機台或作業動線</p>
         </div>
       </div>
 
@@ -116,16 +119,16 @@
         <textarea id="workContent" rows="3"
           placeholder="描述現場進行的作業細節（例如：進出貨棧板搬運、堆高機物料移載、跨區配電與貨物分類堆放作業...）"
           class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
-        <p class="text-[11px] text-slate-400">AI 將依據此處文字情境分析作業危害來源（必填，上限 6000 字）</p>
+        <p class="text-[11px] text-slate-400">AI 將依據此處文字情境分析作業危害來源</p>
       </div>
 
       <!-- 現有安全措施 -->
       <div class="space-y-1.5">
         <label class="block text-xs font-bold text-slate-800">現有安全措施</label>
         <textarea id="safetyMeasures" rows="3"
-          placeholder="描述現場已設置之設備或防護（例如：現場配有基本滅火器、工作人員穿戴一般反光背心、地表有舊版單車道標線...）"
+          placeholder="描述現場已設置之設備或防護（例如：現場配有基本滅火器、工作人員穿戴一般反光背心...）"
           class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
-        <p class="text-[11px] text-slate-400">說明現場已落實之防護以利評估（上限 4000 字）</p>
+        <p class="text-[11px] text-slate-400">說明現場已落實之防護以利評估</p>
       </div>
 
       <!-- 補充說明 -->
@@ -134,7 +137,7 @@
         <textarea id="extraNotes" rows="2"
           placeholder="其他環境變數、外包商動態、氣候或夜班特殊作業注意事項..."
           class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
-        <p class="text-[11px] text-slate-400">補充背景資訊（上限 4000 字）</p>
+        <p class="text-[11px] text-slate-400">補充背景資訊</p>
       </div>
 
       <!-- 現場照片上傳區塊 -->
@@ -150,7 +153,7 @@
           </div>
           <div>
             <div class="text-xs font-bold text-slate-800">點擊選取或拖曳照片至此處</div>
-            <div class="text-[11px] text-slate-400 mt-0.5">選填項目；尚未送出前隨時可預覽與移除</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">有上傳照片時，將自動納入分析並於列印／匯出 PDF 報告中展示</div>
           </div>
         </div>
         <div id="imagePreviewContainer" class="flex flex-wrap gap-2 pt-2 hidden"></div>
@@ -185,7 +188,7 @@
     <div id="resultCard" class="hidden space-y-6">
 
       <!-- 頂部資訊橫幅 -->
-      <div id="riskBanner" class="p-6 rounded-2xl border flex flex-col lg:flex-row justify-between lg:items-center gap-6 shadow-sm transition-all duration-300">
+      <div id="riskBanner" class="p-6 rounded-2xl border flex flex-col lg:flex-row justify-between lg:items-center gap-6 shadow-sm transition-all duration-300 print-break-inside-avoid">
         <div class="space-y-2 flex-1">
           <div class="flex flex-wrap items-center gap-2">
             <span id="riskBadge" class="px-3.5 py-1 text-xs font-extrabold rounded-full uppercase tracking-wider shadow-2xs"></span>
@@ -222,8 +225,22 @@
         </div>
       </div>
 
+      <!-- 現場巡檢存證照片區塊（有傳照片時才顯示，匯出PDF亦會完整呈現） -->
+      <div id="reportEvidenceContainer" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 print-break-inside-avoid">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <div class="p-1.5 bg-indigo-50 text-indigo-600 rounded-lg">
+              <i data-lucide="image" class="w-4 h-4"></i>
+            </div>
+            <h3 class="font-bold text-sm text-slate-900">現場巡檢稽核存證照片</h3>
+          </div>
+          <span class="text-[11px] text-slate-400">現場查核影像佐證</span>
+        </div>
+        <div id="reportEvidenceImages" class="flex flex-wrap gap-4 pt-1"></div>
+      </div>
+
       <!-- 核心報告三大卡片 -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 print-break-inside-avoid">
 
         <!-- 卡片 1：現場危害與防護缺口 -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
@@ -239,7 +256,7 @@
           </div>
         </div>
 
-        <!-- 卡片 2：台灣職安法規條文對照（小標籤化升級） -->
+        <!-- 卡片 2：台灣職安法規條文對照 -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
           <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
             <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
@@ -282,8 +299,8 @@
 
       </div>
 
-      <!-- 控制層級改善對策全寬卡片（條列式微卡片優化） -->
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5">
+      <!-- 控制層級改善對策全寬卡片 -->
+      <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
           <div class="flex items-center gap-2">
             <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
@@ -410,6 +427,8 @@
       document.getElementById("imagePreviewContainer").innerHTML = "";
       document.getElementById("imagePreviewContainer").classList.add("hidden");
       document.getElementById("resultCard").classList.add("hidden");
+      document.getElementById("reportEvidenceContainer").classList.add("hidden");
+      document.getElementById("reportEvidenceImages").innerHTML = "";
       uploadedImagesBase64 = [];
     }
 
@@ -435,7 +454,7 @@
         const reader = new FileReader();
         reader.onload = (e) => {
           const base64Data = e.target.result.split(',')[1];
-          uploadedImagesBase64.push({ mimeType: file.type, data: base64Data });
+          uploadedImagesBase64.push({ mimeType: file.type, data: base64Data, fullUrl: e.target.result });
 
           const div = document.createElement("div");
           div.className = "relative group w-20 h-20 rounded-lg overflow-hidden border border-slate-200";
@@ -499,9 +518,9 @@
       }
     }
 
-    // 呼叫 Gemini API
+    // 呼叫 Gemini 2.0/2.5 API
     async function callGeminiApi(promptText, images, apiKey) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
       const systemInstruction = `你是一位具備台灣「一般業甲種職業安全衛生業務主管」資格的資深安衛顧問。
 請審視使用者提供的作業資訊（包含文字現況與現場照片），特別檢視「現有安全措施」是否存在盲點與不足，並嚴格以純 JSON 格式回應，不得輸出額外 Markdown 語法或字元：
 {
@@ -572,7 +591,6 @@
       };
     }
 
-    // 將 1. **標題**: 格式拆解為獨立的白色精緻小卡片
     function formatNumberedCards(text, themeColor = 'slate') {
       if (!text) return '';
       const items = text.split(/(?=\d+\.\s*\*?\*?)/).map(s => s.trim()).filter(Boolean);
@@ -633,7 +651,23 @@
       document.getElementById("scoreP").textContent = data.p;
       totalScoreEl.textContent = data.total;
 
-      // 1. 法規條文標籤化拆解
+      // 【核心升級】：有上傳照片時才動態渲染照片區塊，否則自動隱藏
+      const evidenceContainer = document.getElementById("reportEvidenceContainer");
+      const evidenceImages = document.getElementById("reportEvidenceImages");
+      if (uploadedImagesBase64 && uploadedImagesBase64.length > 0) {
+        evidenceImages.innerHTML = uploadedImagesBase64.map((img, i) => `
+          <div class="border border-slate-200 rounded-xl overflow-hidden shadow-2xs bg-slate-50 p-2 max-w-sm">
+            <img src="${img.fullUrl || ('data:' + img.mimeType + ';base64,' + img.data)}" class="w-full h-48 object-cover rounded-lg">
+            <span class="block text-[11px] text-slate-500 font-mono text-center mt-1.5">照片證據 #${i + 1}</span>
+          </div>
+        `).join('');
+        evidenceContainer.classList.remove("hidden");
+      } else {
+        evidenceContainer.classList.add("hidden");
+        evidenceImages.innerHTML = "";
+      }
+
+      // 法規條文
       const regContainer = document.getElementById("regulationText");
       if (typeof data.regulations === 'string') {
         const regItems = data.regulations.split(/(?=\d+\.\s*\*?\*?)/).map(s => s.trim()).filter(Boolean);
@@ -652,7 +686,7 @@
         }
       }
 
-      // 2. 缺失列表精緻微卡片化
+      // 缺失列表
       const unsafeList = document.getElementById("unsafeActsList");
       unsafeList.innerHTML = "";
       data.unsafeActs.forEach(act => {
@@ -662,7 +696,7 @@
         unsafeList.appendChild(li);
       });
 
-      // 3. 控制層級改善對策卡片化排版
+      // 三大控制對策
       document.getElementById("actionEngineering").innerHTML = formatNumberedCards(data.engineering, 'blue');
       document.getElementById("actionAdmin").innerHTML = formatNumberedCards(data.admin, 'amber');
       document.getElementById("actionPPE").innerHTML = formatNumberedCards(data.ppe, 'rose');
