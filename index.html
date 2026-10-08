@@ -22,25 +22,24 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
 
-  <!-- 頂部導航列 -->
   <header class="bg-slate-900 text-white shadow-md border-b border-slate-800 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center gap-3">
-        <div class="p-2.5 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl shadow-md text-white">
+        <div class="p-2.5 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl shadow-md text-white">
           <i data-lucide="shield-check" class="w-6 h-6"></i>
         </div>
         <div>
           <div class="flex items-center gap-2">
             <span class="font-extrabold tracking-wider text-base bg-gradient-to-r from-blue-400 to-indigo-200 bg-clip-text text-transparent">SmartOSH System</span>
-            <span class="text-[10px] bg-indigo-900/80 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700">v4.4 Auto-Model</span>
+            <span class="text-[10px] bg-red-900/80 text-red-300 px-2 py-0.5 rounded-full border border-red-700">v6.2 Live-Search 抗舊法干擾版</span>
           </div>
-          <p class="text-xs text-slate-400">現場危害辨識・風險矩陣量化・控制層級對策自動化</p>
+          <p class="text-xs text-slate-400">內建 Google 即時檢索，強制過濾過期法規與完整法條輸出</p>
         </div>
       </div>
       <div class="flex items-center gap-2.5 text-xs">
         <div class="hidden sm:flex items-center gap-1.5 bg-slate-800/80 text-slate-300 px-3 py-1.5 rounded-lg border border-slate-700">
-          <i data-lucide="award" class="w-3.5 h-3.5 text-amber-400"></i>
-          <span>符合一般業甲種主管法定規範</span>
+          <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-400"></i>
+          <span>即時動態法規檢索</span>
         </div>
         <button onclick="toggleApiSettings()" class="bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-700 flex items-center gap-1.5 transition">
           <i data-lucide="key" class="w-3.5 h-3.5 text-indigo-400"></i>
@@ -50,15 +49,13 @@
     </div>
   </header>
 
-  <!-- 主內容容器 -->
   <main class="max-w-6xl mx-auto px-4 py-8 space-y-6 flex-1 w-full">
 
-    <!-- API Key 配置卡片 -->
     <div id="apiConfigPanel" class="hidden bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-3">
       <div class="flex justify-between items-center">
         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
           <i data-lucide="settings" class="w-4 h-4 text-indigo-600"></i>
-          Google Gemini API 金鑰配置（支援 AQ. 與 AIzaSy 格式）
+          Google Gemini API 金鑰配置
         </h4>
         <button onclick="toggleApiSettings()" class="text-slate-400 hover:text-slate-600 text-xs">✕ 關閉</button>
       </div>
@@ -69,12 +66,8 @@
           儲存記憶
         </button>
       </div>
-      <p class="text-[11px] text-slate-500">
-        💡 金鑰僅儲存於您個人的本機瀏覽器（localStorage），自動適配帳號支援之最新模型。
-      </p>
     </div>
 
-    <!-- 表單卡片區塊 -->
     <div id="formContainer" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
 
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-100">
@@ -83,103 +76,74 @@
           <h2 class="text-lg font-bold text-slate-900 tracking-tight">作業環境基本資料與現場資訊</h2>
         </div>
         <div class="flex flex-wrap items-center gap-2">
-          <button onclick="fillExample()" class="px-3 py-1.5 bg-white hover:bg-amber-50 text-slate-700 hover:text-amber-700 border border-slate-200 hover:border-amber-300 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-2xs transition">
-            <span class="text-amber-500 font-bold">⚡</span> 快速帶入測試範例
-          </button>
-          <button onclick="runDemoMode()" class="px-3 py-1.5 bg-white hover:bg-emerald-50 text-slate-700 hover:text-emerald-700 border border-slate-200 hover:border-emerald-300 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-2xs transition">
-            <span class="text-emerald-500 font-bold">🧪</span> 使用 DEMO 模式測試
+          <button onclick="fillExample()" class="px-3 py-1.5 bg-white hover:bg-blue-50 text-slate-700 hover:text-blue-700 border border-slate-200 hover:border-blue-300 rounded-lg text-xs font-medium flex items-center gap-1.5 shadow-2xs transition">
+            <span class="text-blue-500 font-bold">⚡</span> 帶入施工架測試範例
           </button>
         </div>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="space-y-1.5">
-          <label class="block text-xs font-bold text-slate-800">
-            案件名稱 <span class="text-rose-500 font-normal">*（必填）</span>
-          </label>
-          <input type="text" id="caseName" placeholder="例：A廠區物流倉儲作業例行巡檢"
-            class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400">
-          <p class="text-[11px] text-slate-400">輸入本次風險評估專案或巡檢任務名稱</p>
+          <label class="block text-xs font-bold text-slate-800">案件名稱 <span class="text-rose-500 font-normal">*</span></label>
+          <input type="text" id="caseName" placeholder="例：A廠區物流倉儲作業例行巡檢 / B工地高處作業查核" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400">
         </div>
         <div class="space-y-1.5">
           <label class="block text-xs font-bold text-slate-800">作業地點</label>
-          <input type="text" id="workLocation" placeholder="例：新竹廠第二物流中心 1F 裝卸與主要庫區"
-            class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400">
-          <p class="text-[11px] text-slate-400">明確標示所屬廠區、樓層、機台或作業動線</p>
+          <input type="text" id="workLocation" placeholder="明確標示所屬廠區、樓層或機台編號" class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400">
         </div>
       </div>
 
       <div class="space-y-1.5">
-        <label class="block text-xs font-bold text-slate-800">
-          作業內容 <span class="text-rose-500 font-normal">*（必填）</span>
-        </label>
-        <textarea id="workContent" rows="3"
-          placeholder="描述現場進行的作業細節（例如：進出貨棧板搬運、堆高機物料移載、跨區配電與貨物分類堆放作業...）"
-          class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
-        <p class="text-[11px] text-slate-400">AI 將依據此處文字情境分析作業危害來源</p>
+        <label class="block text-xs font-bold text-slate-800">作業內容 <span class="text-rose-500 font-normal">*</span></label>
+        <textarea id="workContent" rows="3" placeholder="描述現場進行的作業細節..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
       </div>
 
       <div class="space-y-1.5">
         <label class="block text-xs font-bold text-slate-800">現有安全措施</label>
-        <textarea id="safetyMeasures" rows="3"
-          placeholder="描述現場已設置之設備或防護（例如：現場配有基本滅火器、工作人員穿戴一般反光背心...）"
-          class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
-        <p class="text-[11px] text-slate-400">說明現場已落實之防護以利評估</p>
+        <textarea id="safetyMeasures" rows="3" placeholder="描述現場防護狀況..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
       </div>
 
       <div class="space-y-1.5">
         <label class="block text-xs font-bold text-slate-800">補充說明</label>
-        <textarea id="extraNotes" rows="2"
-          placeholder="其他環境變數、外包商動態、氣候或夜班特殊作業注意事項..."
-          class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
-        <p class="text-[11px] text-slate-400">補充背景資訊</p>
+        <textarea id="extraNotes" rows="2" placeholder="其他環境變數、承攬商管理狀況、或特殊注意事項..." class="w-full px-3.5 py-2.5 rounded-lg border border-slate-300 text-xs focus:border-blue-500 focus:ring-2 focus:ring-blue-100 outline-none transition placeholder:text-slate-400"></textarea>
       </div>
 
       <div class="space-y-1.5">
-        <label class="block text-xs font-bold text-slate-800">
-          現場照片上傳 <span class="text-slate-400 font-normal">（選填，支援多張：JPG、JPEG、PNG、WEBP）</span>
-        </label>
-        <div id="dropZone" onclick="document.getElementById('fileInput').click()"
-          class="border-2 border-dashed border-blue-200 bg-blue-50/20 hover:bg-blue-50/40 rounded-xl p-8 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2">
+        <label class="block text-xs font-bold text-slate-800">現場照片上傳 <span class="text-slate-400 font-normal">（選填，支援多張）</span></label>
+        <div id="dropZone" onclick="document.getElementById('fileInput').click()" class="border-2 border-dashed border-blue-200 bg-blue-50/20 hover:bg-blue-50/40 rounded-xl p-8 text-center cursor-pointer transition flex flex-col items-center justify-center gap-2">
           <input type="file" id="fileInput" accept="image/*" multiple class="hidden" onchange="handleFileSelect(event)">
           <div class="p-3 bg-white shadow-2xs rounded-full border border-slate-200 text-slate-600">
             <i data-lucide="camera" class="w-6 h-6"></i>
           </div>
           <div>
             <div class="text-xs font-bold text-slate-800">點擊選取或拖曳照片至此處</div>
-            <div class="text-[11px] text-slate-400 mt-0.5">有上傳照片時，將自動納入分析並於列印／匯出 PDF 報告中展示</div>
+            <div class="text-[11px] text-slate-400 mt-0.5">系統將根據照片情境自動啟動 Google 搜尋引擎檢索最新法規</div>
           </div>
         </div>
         <div id="imagePreviewContainer" class="flex flex-wrap gap-2 pt-2 hidden"></div>
       </div>
 
       <div class="pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3">
-        <button onclick="clearFullForm()" class="px-4 py-2 text-xs text-slate-500 hover:text-slate-800 transition">
-          清空所有填寫欄位
-        </button>
-        <button id="submitBtn" onclick="submitAssessment()"
-          class="px-7 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 transition active:scale-95">
+        <button onclick="clearFullForm()" class="px-4 py-2 text-xs text-slate-500 hover:text-slate-800 transition">清空所有填寫欄位</button>
+        <button id="submitBtn" onclick="submitAssessment()" class="px-7 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs rounded-xl shadow-md flex items-center gap-2 transition active:scale-95">
           <i data-lucide="sparkles" class="w-4 h-4 text-blue-200"></i>
-          <span>生成危害辨識與風險評級報告</span>
+          <span>啟用即時連網生成風險報告</span>
         </button>
       </div>
 
     </div>
 
-    <!-- AI 運算狀態 -->
     <div id="loadingState" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center space-y-4">
       <div class="relative inline-block">
         <div class="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin mx-auto"></div>
       </div>
       <div>
-        <h3 class="text-sm font-bold text-slate-800">Gemini AI 職安模型分析中...</h3>
-        <p class="text-xs text-slate-400 mt-1">正在動態媒合模型、整合防護缺口、計算風險矩陣（S×P）並對應法規對策</p>
+        <h3 class="text-sm font-bold text-slate-800">SmartOSH 啟動 Google 搜尋連網中...</h3>
+        <p class="text-xs text-slate-400 mt-1">正在即時檢索全國法規資料庫最新法定條文，並強制過濾舊版法規內容</p>
       </div>
     </div>
 
-    <!-- 分析報告主卡片 -->
     <div id="resultCard" class="hidden space-y-6">
-
       <div id="riskBanner" class="p-6 rounded-2xl border flex flex-col lg:flex-row justify-between lg:items-center gap-6 shadow-sm transition-all duration-300 print-break-inside-avoid">
         <div class="space-y-2 flex-1">
           <div class="flex flex-wrap items-center gap-2">
@@ -216,7 +180,6 @@
         </div>
       </div>
 
-      <!-- 基本資料展示卡片 -->
       <div id="reportBasicInfoContainer" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-2 border-b border-slate-100">
           <div class="flex items-center gap-2">
@@ -251,7 +214,6 @@
         </div>
       </div>
 
-      <!-- 現場存證照片區塊 -->
       <div id="reportEvidenceContainer" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-2 border-b border-slate-100">
           <div class="flex items-center gap-2">
@@ -265,7 +227,6 @@
         <div id="reportEvidenceImages" class="flex flex-wrap gap-4 pt-1"></div>
       </div>
 
-      <!-- 核心報告三大卡片 -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 print-break-inside-avoid">
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
           <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
@@ -285,13 +246,14 @@
             <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
               <i data-lucide="scale" class="w-4 h-4"></i>
             </div>
-            <h3 class="font-bold text-sm text-slate-900">法定合規指引（台灣法規）</h3>
+            <h3 class="font-bold text-sm text-slate-900">現行法定合規標準（台灣法規）</h3>
           </div>
           <div class="space-y-3">
-            <span class="text-[11px] font-semibold text-slate-400 block mb-1">對照法規條文與基準：</span>
+            <span class="text-[11px] font-semibold text-slate-400 block mb-1">即時檢索對照法規與基準：</span>
             <div id="regulationText"></div>
-            <div class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100">
-              📌 <strong>查核備註</strong>：依職安法規，雇主對防止有害物、搬運與機具危害應具備符合標準之安全設施。
+            <div class="text-[11px] text-slate-500 bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-center gap-1.5">
+              <i data-lucide="globe" class="w-3.5 h-3.5 text-blue-400"></i>
+              <span><strong>動態連網</strong>：此法規依現場情境透過 Google 即時檢索產出。</span>
             </div>
           </div>
         </div>
@@ -310,7 +272,7 @@
             </div>
             <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 border border-slate-100">
               <span class="text-slate-500">建議權責人員</span>
-              <span class="font-bold text-slate-700">現場作業主管 / 工安業務主管</span>
+              <span class="font-bold text-slate-700">現場作業主管 / 職安業務主管</span>
             </div>
             <div class="flex justify-between items-center p-2 rounded-lg bg-slate-50 border border-slate-100">
               <span class="text-slate-500">複查管制機制</span>
@@ -320,7 +282,6 @@
         </div>
       </div>
 
-      <!-- 控制層級防護改善對策 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
           <div class="flex items-center gap-2">
@@ -362,7 +323,6 @@
         </div>
       </div>
 
-      <!-- 底部動作工具列 -->
       <div id="actionButtons" class="flex flex-wrap justify-end gap-3 pt-2">
         <button onclick="window.print()" class="px-4 py-2 bg-white border border-slate-300 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-50 flex items-center gap-1.5 shadow-2xs transition">
           <i data-lucide="printer" class="w-3.5 h-3.5 text-slate-500"></i>
@@ -410,7 +370,7 @@
       const key = document.getElementById("geminiApiKey").value.trim();
       if (key) {
         localStorage.setItem("smartosh_gemini_key", key);
-        alert("金鑰已成功記憶！已啟用動態模型探測與標準授權。");
+        alert("金鑰已成功記憶！");
       } else {
         localStorage.removeItem("smartosh_gemini_key");
         alert("已清除儲存的金鑰，切換為離線模式。");
@@ -424,11 +384,11 @@
     }
 
     function fillExample() {
-      document.getElementById("caseName").value = "A廠區物流倉儲作業例行巡檢";
-      document.getElementById("workLocation").value = "新竹廠第二物流中心 1F 裝卸與主要庫區";
-      document.getElementById("workContent").value = "進出貨棧板搬運、堆高機高處物料移載、跨區配電與高層貨物分類堆放作業。現場堆高機頻繁穿梭於人員動線，且有高空棧板物料傾斜情事。";
-      document.getElementById("safetyMeasures").value = "現場配有基本乾粉滅火器、工作人員穿戴一般反光背心、地表有舊版單向車道標線（部分磨損模糊）。";
-      document.getElementById("extraNotes").value = "現場為夜班轉日班交接時段，堆高機進出頻繁，現場照明度部分區域略顯不足。";
+      document.getElementById("caseName").value = "高度七公尺以上施工架搭設作業巡檢";
+      document.getElementById("workLocation").value = "戶外新建工程 B棟外牆";
+      document.getElementById("workContent").value = "勞工正在進行高度約八公尺之外牆施工架構築與工作台搭設作業。";
+      document.getElementById("safetyMeasures").value = "勞工未穿戴安全帶，工作台部分未滿鋪，尚未經查驗即開始攀爬施工。";
+      document.getElementById("extraNotes").value = "疑似未具備符合強度計算之施工圖說。";
     }
 
     function runDemoMode() {
@@ -536,13 +496,11 @@
       }
     }
 
-    // 動態向 Google 查詢你當前金鑰支援的所有模型，並自動選擇最合適者
     async function getAvailableModelList(apiKey) {
       const defaultCandidates = [
         "gemini-2.5-flash",
         "gemini-2.0-flash",
         "gemini-2.0-flash-exp",
-        "gemini-1.5-flash-8b",
         "gemini-1.5-flash"
       ];
 
@@ -558,7 +516,6 @@
               .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"))
               .map(m => m.name.replace("models/", ""));
             
-            // 挑選最佳優先序
             for (const preferred of defaultCandidates) {
               if (supported.includes(preferred)) {
                 return [preferred, ...supported.filter(m => m !== preferred)];
@@ -573,29 +530,37 @@
       return defaultCandidates;
     }
 
-    // 核心 API 呼叫函式
+    // 【加入年份防護罩與完整法條輸出的核心指令】
     async function callGeminiApi(promptText, images, apiKey) {
       const candidateModels = await getAvailableModelList(apiKey);
 
-      const systemInstruction = `你是一位具備台灣「一般業甲種職業安全衛生業務主管」資格的資深安衛顧問。
-請審視使用者提供的作業資訊（包含文字現況與現場照片），特別檢視「現有安全措施」是否存在盲點與不足，並嚴格以純 JSON 格式回應，不得輸出額外 Markdown 語法或字元：
+      const systemInstruction = `你是一位精通台灣現行最新勞動法規的「職業安全衛生特級稽核顧問」。
+請嚴格檢視使用者輸入之作業資訊及現場照片，精準找出危害與防護盲點。
+
+【即時連網法規檢索指令 - 年份強制過濾】：
+遇到特定危害情境，你必須使用 Google Search 工具即時連網檢索台灣「全國法規資料庫」或「勞動部」最新公布之職安法規。
+⚠️ **極度重要警告**：
+1. 台灣職安法規近年歷經多次重大修法，檢索時「絕對禁止」引用 2021 年以前的舊版條文、過期 PDF 或舊版宣導品。
+2. 必須再三確認條文內容為「現行最新版本」。例如：《營造安全衛生設施標準》第 40 條關於施工架之強度計算與施工圖說門檻，現行法規已修正為「高度七公尺以上」（非五公尺），請務必精準引用。
+
+【輸出格式約束】：嚴格以純 JSON 格式輸出，不得包含 Markdown 代碼塊標籤：
 {
   "hazardType": "危害類型名稱",
   "riskTitle": "缺失名稱",
-  "riskSummary": "1至2句危害成因深度說明",
+  "riskSummary": "1至2句現場缺失成因",
   "s": 嚴重度數字(1-4),
   "p": 發生率數字(1-4),
   "total": 分數(s*p),
   "level": "低度風險 (綠色) / 中度風險 (黃色) / 高度風險 (紅色)",
   "levelColor": "emerald 或 amber 或 rose",
-  "regulations": "引用台灣職業安全衛生設施規則相關法條與重點，多條請以 1. 2. 格式分列",
-  "unsafeActs": ["違規要點與措施不足處1", "違規要點與措施不足處2", "違規要點與措施不足處3"],
-  "engineering": "針對不足處的工程控制改善，多條請以 1. 2. 格式分列",
-  "admin": "行政管理改善，多條請以 1. 2. 格式分列",
-  "ppe": "個人防護具規格要求，多條請以 1. 2. 格式分列"
+  "regulations": "請完整列出法規名稱、條號與『具體法條內容全文』。多條請以 1. 2. 格式分列。例如：1. 《缺氧症預防規則》第4條：雇主使勞工從事缺氧危險作業時...（此處必須寫出法條具體文字內容全文）",
+  "unsafeActs": ["違規要點與措施不足處1", "違規要點與措施不足處2"],
+  "engineering": "1. 工程對策1\\n2. 工程對策2",
+  "admin": "1. 行政管理對策1\\n2. 行政管理對策2",
+  "ppe": "1. 個人防護具（請指明最新 CNS 國家標準）\\n2. 個人防護具作法2"
 }`;
 
-      const userParts = [{ text: `${systemInstruction}\n\n【巡檢資料】:\n${promptText}` }];
+      const userParts = [{ text: `${systemInstruction}\n\n【現場巡檢填報資料】:\n${promptText}` }];
 
       if (images && images.length > 0) {
         images.forEach(img => {
@@ -609,7 +574,8 @@
       }
 
       const requestBody = JSON.stringify({
-        contents: [{ role: "user", parts: userParts }]
+        contents: [{ role: "user", parts: userParts }],
+        tools: [{ googleSearch: {} }] 
       });
 
       let lastErrorDetail = "";
@@ -635,7 +601,7 @@
           } else {
             const errText = await res.text();
             lastErrorDetail = `[${model}] HTTP ${res.status}: ${errText}`;
-            console.warn(`模型 ${model} 呼叫未成功，自動嘗試下一個：`, lastErrorDetail);
+            console.warn(`模型 ${model} 呼叫未成功，嘗試下一個：`, lastErrorDetail);
           }
         } catch (netErr) {
           lastErrorDetail = `[${model}] 網路錯誤: ${netErr.message}`;
@@ -653,7 +619,7 @@
         s: 4, p: 3, total: 12,
         level: "高度風險 (紅色)",
         levelColor: "rose",
-        regulations: "1. 《職業安全衛生設施規則》第 116 條：雇主對車輛系車道與防護應設置清楚標示與人車分道。\n2. 《職業安全衛生設施規則》第 151 條：物料堆放高度應維持穩固防塌措施，高處堆放應設止滑固定帶。",
+        regulations: "1. 《職業安全衛生設施規則》第 116 條：雇主對於車輛系營建機械或車輛系物料搬運機具作業時，應妥為設置工作地點，維持適當之行車路線。\n2. 《職業安全衛生設施規則》第 151 條：雇主對於物料之堆放，應為防止倒塌、崩塌或掉落，採取繩索捆綁、護網、擋樁、限制高度或變更堆積等必要措施。",
         unsafeActs: [
           "人車共用通道且地面指引標線磨損嚴重，缺乏防撞實體護欄",
           "堆高機行經盲區與交叉路口未減速鳴笛，人員未穿著高可見度反光背心",
@@ -665,12 +631,20 @@
       };
     }
 
-    function formatNumberedCards(text, themeColor = 'slate') {
-      if (!text) return '';
-      const items = text.split(/(?=\d+\.\s*\*?\*?)/).map(s => s.trim()).filter(Boolean);
+    function formatNumberedCards(input, themeColor = 'slate') {
+      if (!input) return '';
+      let items = [];
+
+      if (Array.isArray(input)) {
+        items = input.map(s => String(s).trim()).filter(Boolean);
+      } else {
+        const text = String(input);
+        items = text.split(/(?=\d+\.\s*\*?\*?)/).map(s => s.trim()).filter(Boolean);
+      }
       
-      if (items.length <= 1) {
-        const clean = text.replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 font-bold">$1</strong>');
+      if (items.length === 0) return '';
+      if (items.length === 1 && !/^\d+\./.test(items[0])) {
+        const clean = items[0].replace(/\*\*(.*?)\*\*/g, '<strong class="text-slate-900 font-bold">$1</strong>');
         return `<div class="p-3 bg-white rounded-xl border border-slate-200/70 shadow-2xs text-[13px] text-slate-700 leading-relaxed">${clean}</div>`;
       }
 
@@ -724,14 +698,12 @@
       document.getElementById("scoreP").textContent = data.p;
       totalScoreEl.textContent = data.total;
 
-      // 基本資訊展示
       document.getElementById("infoCaseName").textContent = formInputs.caseName || "未填寫";
       document.getElementById("infoWorkLocation").textContent = formInputs.location || "未註明地點";
       document.getElementById("infoWorkContent").textContent = formInputs.content || "未填寫作業內容";
       document.getElementById("infoSafetyMeasures").textContent = formInputs.measures || "無特定現有措施／現場缺乏防護";
       document.getElementById("infoExtraNotes").textContent = formInputs.notes || "無特別備註事項";
 
-      // 現場存證照片
       const evidenceContainer = document.getElementById("reportEvidenceContainer");
       const evidenceImages = document.getElementById("reportEvidenceImages");
       if (uploadedImagesBase64 && uploadedImagesBase64.length > 0) {
@@ -747,29 +719,33 @@
         evidenceImages.innerHTML = "";
       }
 
-      // 法規
       const regContainer = document.getElementById("regulationText");
-      if (typeof data.regulations === 'string') {
-        const regItems = data.regulations.split(/(?=\d+\.\s*\*?\*?)/).map(s => s.trim()).filter(Boolean);
-        if (regItems.length > 1) {
-          regContainer.className = "space-y-2.5";
-          regContainer.innerHTML = regItems.map(item => {
-            const clean = item.replace(/^\d+\.\s*/, '').replace(/\*\*(.*?)\*\*/g, '<span class="font-bold text-blue-900">$1</span>');
-            return `<div class="p-3 bg-blue-50/80 rounded-xl border border-blue-100 text-slate-700 text-xs leading-relaxed flex items-start gap-2 shadow-2xs">
-              <span class="text-blue-500 font-bold mt-0.5">§</span>
-              <span>${clean}</span>
-            </div>`;
-          }).join('');
-        } else {
-          regContainer.className = "p-3 bg-blue-50/80 rounded-xl border border-blue-100 text-slate-800 text-xs leading-relaxed";
-          regContainer.innerHTML = data.regulations.replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-900">$1</strong>');
-        }
+      let regItems = [];
+      if (Array.isArray(data.regulations)) {
+        regItems = data.regulations.map(s => String(s).trim()).filter(Boolean);
+      } else if (typeof data.regulations === 'string') {
+        regItems = data.regulations.split(/(?=\d+\.\s*\*?\*?)/).map(s => s.trim()).filter(Boolean);
       }
 
-      // 缺失
+      if (regItems.length > 1) {
+        regContainer.className = "space-y-2.5";
+        regContainer.innerHTML = regItems.map(item => {
+          const clean = item.replace(/^\d+\.\s*/, '').replace(/\*\*(.*?)\*\*/g, '<span class="font-bold text-blue-900">$1</span>');
+          return `<div class="p-3 bg-blue-50/80 rounded-xl border border-blue-100 text-slate-700 text-xs leading-relaxed flex items-start gap-2 shadow-2xs">
+            <span class="text-blue-500 font-bold mt-0.5">§</span>
+            <span>${clean}</span>
+          </div>`;
+        }).join('');
+      } else if (regItems.length === 1) {
+        regContainer.className = "p-3 bg-blue-50/80 rounded-xl border border-blue-100 text-slate-800 text-xs leading-relaxed";
+        regContainer.innerHTML = regItems[0].replace(/\*\*(.*?)\*\*/g, '<strong class="text-blue-900">$1</strong>');
+      }
+
       const unsafeList = document.getElementById("unsafeActsList");
       unsafeList.innerHTML = "";
-      data.unsafeActs.forEach(act => {
+      const acts = Array.isArray(data.unsafeActs) ? data.unsafeActs : [data.unsafeActs];
+      acts.forEach(act => {
+        if (!act) return;
         const li = document.createElement("li");
         li.className = "p-3 bg-rose-50/40 rounded-xl border border-rose-100/80 text-xs text-slate-700 leading-relaxed flex items-start gap-2.5 shadow-2xs";
         li.innerHTML = `<span class="px-1.5 py-0.5 bg-rose-100 text-rose-700 font-black rounded text-[10px] shrink-0 mt-0.5">缺失</span><span>${act}</span>`;
@@ -816,10 +792,10 @@
       const content = document.getElementById("infoWorkContent").textContent;
       const title = document.getElementById("riskTitle").textContent;
       const level = document.getElementById("riskBadge").textContent;
-      const reg = document.getElementById("regulationText").textContent;
-      const eng = document.getElementById("actionEngineering").textContent;
-      const admin = document.getElementById("actionAdmin").textContent;
-      const ppe = document.getElementById("actionPPE").textContent;
+      const reg = document.getElementById("regulationText").textContent.replace(/\s+/g, ' ').trim();
+      const eng = document.getElementById("actionEngineering").textContent.replace(/\s+/g, ' ').trim();
+      const admin = document.getElementById("actionAdmin").textContent.replace(/\s+/g, ' ').trim();
+      const ppe = document.getElementById("actionPPE").textContent.replace(/\s+/g, ' ').trim();
 
       const reportText = `【SmartOSH 現場職安巡查缺失改善管制單】
 【基本資訊】：案件：${caseName} ｜ 地點：${location}
