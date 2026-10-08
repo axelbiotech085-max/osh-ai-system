@@ -13,9 +13,9 @@
       body { background: white !important; font-size: 12px !important; }
       header, #formContainer, #actionButtons, #apiConfigPanel, footer { display: none !important; }
       main { max-width: 100% !important; padding: 0 !important; margin: 0 !important; }
-      #resultCard { display: block !important; border: 1px solid #ccc !important; box-shadow: none !important; padding: 10px !important; }
+      #resultCard { display: block !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
       .print-break-inside-avoid { break-inside: avoid; page-break-inside: avoid; }
-      #reportEvidenceImages img { max-height: 220px !important; object-fit: contain !important; }
+      #reportEvidenceImages img { max-height: 200px !important; object-fit: contain !important; }
     }
     .grid-matrix-cell { transition: all 0.2s ease-in-out; }
   </style>
@@ -32,7 +32,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="font-extrabold tracking-wider text-base bg-gradient-to-r from-blue-400 to-indigo-200 bg-clip-text text-transparent">SmartOSH System</span>
-            <span class="text-[10px] bg-indigo-900/80 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700">v3.9 Report Pro</span>
+            <span class="text-[10px] bg-indigo-900/80 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700">v4.0 Full Audit</span>
           </div>
           <p class="text-xs text-slate-400">現場危害辨識・風險矩陣量化・控制層級對策自動化</p>
         </div>
@@ -225,7 +225,42 @@
         </div>
       </div>
 
-      <!-- 現場巡檢存證照片區塊（有傳照片時才顯示，匯出PDF亦會完整呈現） -->
+      <!-- 【全新升級】：作業環境基本資料與現場資訊展示卡片（匯出 PDF 亦完整保留） -->
+      <div id="reportBasicInfoContainer" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 print-break-inside-avoid">
+        <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
+              <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+            </div>
+            <h3 class="font-bold text-sm text-slate-900">作業環境基本資料與現場查核現況</h3>
+          </div>
+          <span class="text-[11px] text-slate-400">現場填報內容</span>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-1">
+          <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
+            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">案件名稱</span>
+            <span id="infoCaseName" class="font-bold text-slate-800"></span>
+          </div>
+          <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
+            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">作業地點</span>
+            <span id="infoWorkLocation" class="text-slate-800"></span>
+          </div>
+          <div class="md:col-span-2 p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
+            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">作業內容細節</span>
+            <p id="infoWorkContent" class="text-slate-800 leading-relaxed"></p>
+          </div>
+          <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
+            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">現場現有安全措施</span>
+            <p id="infoSafetyMeasures" class="text-slate-800 leading-relaxed"></p>
+          </div>
+          <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
+            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">補充說明與現場變數</span>
+            <p id="infoExtraNotes" class="text-slate-800 leading-relaxed"></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 現場巡檢存證照片區塊 -->
       <div id="reportEvidenceContainer" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-2 border-b border-slate-100">
           <div class="flex items-center gap-2">
@@ -442,8 +477,8 @@
       });
     }
 
-    function handleFileSelect(e) {
-      handleFiles(e.target.files);
+    function handleFileSelect(event) {
+      handleFiles(event.target.files);
     }
 
     function handleFiles(files) {
@@ -506,11 +541,11 @@
           await new Promise(r => setTimeout(r, 600));
           resultData = generateLocalAnalysis(combinedPrompt);
         }
-        renderResult(resultData, caseName);
+        renderResult(resultData, { caseName, location, content, measures, notes });
       } catch (err) {
         console.error(err);
         alert("API 連線或金鑰處理異常，系統已自動啟用高擬真離線規則庫輸出分析報告。");
-        renderResult(generateLocalAnalysis(combinedPrompt), caseName);
+        renderResult(generateLocalAnalysis(combinedPrompt), { caseName, location, content, measures, notes });
       } finally {
         loading.classList.add("hidden");
         resultCard.classList.remove("hidden");
@@ -518,9 +553,9 @@
       }
     }
 
-    // 呼叫 Gemini 2.0/2.5 API
+    // 呼叫最穩定的 Gemini 1.5 Flash 端點
     async function callGeminiApi(promptText, images, apiKey) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
       const systemInstruction = `你是一位具備台灣「一般業甲種職業安全衛生業務主管」資格的資深安衛顧問。
 請審視使用者提供的作業資訊（包含文字現況與現場照片），特別檢視「現有安全措施」是否存在盲點與不足，並嚴格以純 JSON 格式回應，不得輸出額外 Markdown 語法或字元：
 {
@@ -614,8 +649,8 @@
       }).join('');
     }
 
-    // 渲染報告介面
-    function renderResult(data, caseName) {
+    // 渲染報告介面（完整整合基本資訊表格）
+    function renderResult(data, formInputs) {
       const banner = document.getElementById("riskBanner");
       const badge = document.getElementById("riskBadge");
       const totalScoreEl = document.getElementById("scoreTotal");
@@ -643,7 +678,7 @@
 
       badge.textContent = data.level;
       document.getElementById("hazardType").textContent = "類別：" + data.hazardType;
-      document.getElementById("riskTitle").textContent = data.riskTitle + (caseName ? `（${caseName}）` : "");
+      document.getElementById("riskTitle").textContent = data.riskTitle + (formInputs.caseName ? `（${formInputs.caseName}）` : "");
       document.getElementById("riskSummary").textContent = data.riskSummary;
       document.getElementById("reportId").textContent = "NO." + Math.floor(100000 + Math.random() * 900000);
 
@@ -651,7 +686,14 @@
       document.getElementById("scoreP").textContent = data.p;
       totalScoreEl.textContent = data.total;
 
-      // 【核心升級】：有上傳照片時才動態渲染照片區塊，否則自動隱藏
+      // 【全新升級】：注入填寫之基本資訊到展示卡片中
+      document.getElementById("infoCaseName").textContent = formInputs.caseName || "未填寫";
+      document.getElementById("infoWorkLocation").textContent = formInputs.location || "未註明地點";
+      document.getElementById("infoWorkContent").textContent = formInputs.content || "未填寫作業內容";
+      document.getElementById("infoSafetyMeasures").textContent = formInputs.measures || "無特定現有措施／現場缺乏防護";
+      document.getElementById("infoExtraNotes").textContent = formInputs.notes || "無特別備註事項";
+
+      // 照片存證區塊
       const evidenceContainer = document.getElementById("reportEvidenceContainer");
       const evidenceImages = document.getElementById("reportEvidenceImages");
       if (uploadedImagesBase64 && uploadedImagesBase64.length > 0) {
@@ -732,6 +774,9 @@
     }
 
     function copyReport() {
+      const caseName = document.getElementById("infoCaseName").textContent;
+      const location = document.getElementById("infoWorkLocation").textContent;
+      const content = document.getElementById("infoWorkContent").textContent;
       const title = document.getElementById("riskTitle").textContent;
       const level = document.getElementById("riskBadge").textContent;
       const reg = document.getElementById("regulationText").textContent;
@@ -739,10 +784,21 @@
       const admin = document.getElementById("actionAdmin").textContent;
       const ppe = document.getElementById("actionPPE").textContent;
 
-      const reportText = `【SmartOSH 現場職安巡查缺失改善管制單】\n案件評估：${title}\n評定風險：${level}\n涉及法規：${reg}\n\n改善方案：\n1. 工程控制：${eng}\n2. 行政管理：${admin}\n3. 防護具要求：${ppe}\n\n管考機制：列入安全自主改善稽核追蹤`;
+      const reportText = `【SmartOSH 現場職安巡查缺失改善管制單】
+【基本資訊】：案件：${caseName} ｜ 地點：${location}
+【作業內容】：${content}
+【評定風險】：${level} ｜ 缺失：${title}
+【涉及法規】：${reg}
+
+【控制層級改善方案】：
+1. 工程控制：${eng}
+2. 行政管理：${admin}
+3. 防護具要求：${ppe}
+
+【管考機制】：列入安全自主改善稽核追蹤`;
 
       navigator.clipboard.writeText(reportText).then(() => {
-        alert("已成功複製完整巡檢改善報告！");
+        alert("已成功複製完整巡檢改善報告（含基本資訊）！");
       });
     }
   </script>
