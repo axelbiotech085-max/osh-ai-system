@@ -22,7 +22,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col font-sans antialiased">
 
-  <!-- 頂部高階導航列 -->
+  <!-- 頂部導航列 -->
   <header class="bg-slate-900 text-white shadow-md border-b border-slate-800 sticky top-0 z-50">
     <div class="max-w-6xl mx-auto px-4 py-3 flex flex-wrap justify-between items-center gap-3">
       <div class="flex items-center gap-3">
@@ -32,7 +32,7 @@
         <div>
           <div class="flex items-center gap-2">
             <span class="font-extrabold tracking-wider text-base bg-gradient-to-r from-blue-400 to-indigo-200 bg-clip-text text-transparent">SmartOSH System</span>
-            <span class="text-[10px] bg-indigo-900/80 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700">v4.0 Full Audit</span>
+            <span class="text-[10px] bg-indigo-900/80 text-indigo-300 px-2 py-0.5 rounded-full border border-indigo-700">v4.4 Auto-Model</span>
           </div>
           <p class="text-xs text-slate-400">現場危害辨識・風險矩陣量化・控制層級對策自動化</p>
         </div>
@@ -58,26 +58,25 @@
       <div class="flex justify-between items-center">
         <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
           <i data-lucide="settings" class="w-4 h-4 text-indigo-600"></i>
-          Google Gemini API 金鑰配置（瀏覽器自動記憶）
+          Google Gemini API 金鑰配置（支援 AQ. 與 AIzaSy 格式）
         </h4>
         <button onclick="toggleApiSettings()" class="text-slate-400 hover:text-slate-600 text-xs">✕ 關閉</button>
       </div>
       <div class="flex gap-2">
-        <input type="password" id="geminiApiKey" placeholder="請貼上 AIzaSy 開頭的金鑰..." 
+        <input type="password" id="geminiApiKey" placeholder="貼上複製的金鑰..." 
           class="flex-1 px-3 py-2 border border-slate-300 rounded-lg text-xs outline-none focus:ring-2 focus:ring-indigo-500 font-mono">
         <button onclick="saveApiKeyManually()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-medium rounded-lg transition">
           儲存記憶
         </button>
       </div>
       <p class="text-[11px] text-slate-500">
-        💡 金鑰僅儲存於您個人的本機瀏覽器（localStorage），不會外洩。
+        💡 金鑰僅儲存於您個人的本機瀏覽器（localStorage），自動適配帳號支援之最新模型。
       </p>
     </div>
 
     <!-- 表單卡片區塊 -->
     <div id="formContainer" class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 sm:p-8 space-y-6">
 
-      <!-- 表單頂部標題與快速範例按鈕列 -->
       <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 pb-4 border-b border-slate-100">
         <div class="flex items-center gap-2.5">
           <span class="w-1.5 h-6 bg-blue-600 rounded-full inline-block"></span>
@@ -93,7 +92,6 @@
         </div>
       </div>
 
-      <!-- 案件名稱 與 作業地點 -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
         <div class="space-y-1.5">
           <label class="block text-xs font-bold text-slate-800">
@@ -111,7 +109,6 @@
         </div>
       </div>
 
-      <!-- 作業內容 (必填) -->
       <div class="space-y-1.5">
         <label class="block text-xs font-bold text-slate-800">
           作業內容 <span class="text-rose-500 font-normal">*（必填）</span>
@@ -122,7 +119,6 @@
         <p class="text-[11px] text-slate-400">AI 將依據此處文字情境分析作業危害來源</p>
       </div>
 
-      <!-- 現有安全措施 -->
       <div class="space-y-1.5">
         <label class="block text-xs font-bold text-slate-800">現有安全措施</label>
         <textarea id="safetyMeasures" rows="3"
@@ -131,7 +127,6 @@
         <p class="text-[11px] text-slate-400">說明現場已落實之防護以利評估</p>
       </div>
 
-      <!-- 補充說明 -->
       <div class="space-y-1.5">
         <label class="block text-xs font-bold text-slate-800">補充說明</label>
         <textarea id="extraNotes" rows="2"
@@ -140,7 +135,6 @@
         <p class="text-[11px] text-slate-400">補充背景資訊</p>
       </div>
 
-      <!-- 現場照片上傳區塊 -->
       <div class="space-y-1.5">
         <label class="block text-xs font-bold text-slate-800">
           現場照片上傳 <span class="text-slate-400 font-normal">（選填，支援多張：JPG、JPEG、PNG、WEBP）</span>
@@ -159,7 +153,6 @@
         <div id="imagePreviewContainer" class="flex flex-wrap gap-2 pt-2 hidden"></div>
       </div>
 
-      <!-- 提交按鈕列 -->
       <div class="pt-4 border-t border-slate-100 flex flex-wrap justify-between items-center gap-3">
         <button onclick="clearFullForm()" class="px-4 py-2 text-xs text-slate-500 hover:text-slate-800 transition">
           清空所有填寫欄位
@@ -173,21 +166,20 @@
 
     </div>
 
-    <!-- AI 運算中動畫狀態 -->
+    <!-- AI 運算狀態 -->
     <div id="loadingState" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center space-y-4">
       <div class="relative inline-block">
         <div class="w-12 h-12 rounded-full border-4 border-blue-200 border-t-blue-600 animate-spin mx-auto"></div>
       </div>
       <div>
         <h3 class="text-sm font-bold text-slate-800">Gemini AI 職安模型分析中...</h3>
-        <p class="text-xs text-slate-400 mt-1">正在整合現有防護缺口、計算風險矩陣（S×P），並對應台灣法規生成具體對策</p>
+        <p class="text-xs text-slate-400 mt-1">正在動態媒合模型、整合防護缺口、計算風險矩陣（S×P）並對應法規對策</p>
       </div>
     </div>
 
     <!-- 分析報告主卡片 -->
     <div id="resultCard" class="hidden space-y-6">
 
-      <!-- 頂部資訊橫幅 -->
       <div id="riskBanner" class="p-6 rounded-2xl border flex flex-col lg:flex-row justify-between lg:items-center gap-6 shadow-sm transition-all duration-300 print-break-inside-avoid">
         <div class="space-y-2 flex-1">
           <div class="flex flex-wrap items-center gap-2">
@@ -199,7 +191,6 @@
           <p id="riskSummary" class="text-xs leading-relaxed opacity-90 max-w-3xl"></p>
         </div>
 
-        <!-- 計分大面板與 4x4 矩陣圖示 -->
         <div class="flex flex-col sm:flex-row items-center gap-4 bg-white/90 backdrop-blur-md p-4 rounded-xl border border-slate-200 shadow-sm shrink-0">
           <div class="flex items-center gap-3 pr-2">
             <div class="text-center px-1">
@@ -225,7 +216,7 @@
         </div>
       </div>
 
-      <!-- 【全新升級】：作業環境基本資料與現場資訊展示卡片（匯出 PDF 亦完整保留） -->
+      <!-- 基本資料展示卡片 -->
       <div id="reportBasicInfoContainer" class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-2 border-b border-slate-100">
           <div class="flex items-center gap-2">
@@ -238,29 +229,29 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-1">
           <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
-            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">案件名稱</span>
+            <span class="font-bold block text-[11px] text-slate-400">案件名稱</span>
             <span id="infoCaseName" class="font-bold text-slate-800"></span>
           </div>
           <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
-            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">作業地點</span>
+            <span class="font-bold block text-[11px] text-slate-400">作業地點</span>
             <span id="infoWorkLocation" class="text-slate-800"></span>
           </div>
           <div class="md:col-span-2 p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
-            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">作業內容細節</span>
+            <span class="font-bold block text-[11px] text-slate-400">作業內容細節</span>
             <p id="infoWorkContent" class="text-slate-800 leading-relaxed"></p>
           </div>
           <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
-            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">現場現有安全措施</span>
+            <span class="font-bold block text-[11px] text-slate-400">現場現有安全措施</span>
             <p id="infoSafetyMeasures" class="text-slate-800 leading-relaxed"></p>
           </div>
           <div class="p-3 bg-slate-50/80 rounded-lg border border-slate-100 space-y-1">
-            <span class="font-bold text-slate-700 block text-[11px] text-slate-400">補充說明與現場變數</span>
+            <span class="font-bold block text-[11px] text-slate-400">補充說明與現場變數</span>
             <p id="infoExtraNotes" class="text-slate-800 leading-relaxed"></p>
           </div>
         </div>
       </div>
 
-      <!-- 現場巡檢存證照片區塊 -->
+      <!-- 現場存證照片區塊 -->
       <div id="reportEvidenceContainer" class="hidden bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-3 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-2 border-b border-slate-100">
           <div class="flex items-center gap-2">
@@ -276,8 +267,6 @@
 
       <!-- 核心報告三大卡片 -->
       <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 print-break-inside-avoid">
-
-        <!-- 卡片 1：現場危害與防護缺口 -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
           <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
             <div class="p-1.5 bg-rose-50 text-rose-600 rounded-lg">
@@ -291,7 +280,6 @@
           </div>
         </div>
 
-        <!-- 卡片 2：台灣職安法規條文對照 -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
           <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
             <div class="p-1.5 bg-blue-50 text-blue-600 rounded-lg">
@@ -308,7 +296,6 @@
           </div>
         </div>
 
-        <!-- 卡片 3：管制作業與時限指引 -->
         <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 space-y-4">
           <div class="flex items-center gap-2 pb-2 border-b border-slate-100">
             <div class="p-1.5 bg-emerald-50 text-emerald-600 rounded-lg">
@@ -331,10 +318,9 @@
             </div>
           </div>
         </div>
-
       </div>
 
-      <!-- 控制層級改善對策全寬卡片 -->
+      <!-- 控制層級防護改善對策 -->
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6 space-y-5 print-break-inside-avoid">
         <div class="flex items-center justify-between pb-3 border-b border-slate-100">
           <div class="flex items-center gap-2">
@@ -350,7 +336,6 @@
         </div>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <!-- 工程控制 -->
           <div class="p-4 rounded-xl bg-slate-50/70 border border-slate-200/80 space-y-2">
             <div class="flex items-center gap-2">
               <span class="w-5 h-5 rounded-full bg-blue-600 text-white flex items-center justify-center text-[10px] font-bold">1</span>
@@ -359,7 +344,6 @@
             <div id="actionEngineering" class="space-y-2.5 mt-2"></div>
           </div>
 
-          <!-- 行政管理 -->
           <div class="p-4 rounded-xl bg-slate-50/70 border border-slate-200/80 space-y-2">
             <div class="flex items-center gap-2">
               <span class="w-5 h-5 rounded-full bg-amber-500 text-white flex items-center justify-center text-[10px] font-bold">2</span>
@@ -368,7 +352,6 @@
             <div id="actionAdmin" class="space-y-2.5 mt-2"></div>
           </div>
 
-          <!-- 防護具 PPE -->
           <div class="p-4 rounded-xl bg-slate-50/70 border border-slate-200/80 space-y-2">
             <div class="flex items-center gap-2">
               <span class="w-5 h-5 rounded-full bg-rose-600 text-white flex items-center justify-center text-[10px] font-bold">3</span>
@@ -427,10 +410,10 @@
       const key = document.getElementById("geminiApiKey").value.trim();
       if (key) {
         localStorage.setItem("smartosh_gemini_key", key);
-        alert("API Key 已成功記憶於瀏覽器！下次使用無需再輸入。");
+        alert("金鑰已成功記憶！已啟用動態模型探測與標準授權。");
       } else {
         localStorage.removeItem("smartosh_gemini_key");
-        alert("已清除儲存的 API Key，切換為離線模式。");
+        alert("已清除儲存的金鑰，切換為離線模式。");
       }
       loadApiKey();
       toggleApiSettings();
@@ -544,7 +527,7 @@
         renderResult(resultData, { caseName, location, content, measures, notes });
       } catch (err) {
         console.error(err);
-        alert("API 連線或金鑰處理異常，系統已自動啟用高擬真離線規則庫輸出分析報告。");
+        alert(`API 呼叫失敗詳細資訊：\n${err.message}\n\n系統已自動切換為離線規則庫報告。`);
         renderResult(generateLocalAnalysis(combinedPrompt), { caseName, location, content, measures, notes });
       } finally {
         loading.classList.add("hidden");
@@ -553,9 +536,47 @@
       }
     }
 
-    // 呼叫最穩定的 Gemini 1.5 Flash 端點
+    // 動態向 Google 查詢你當前金鑰支援的所有模型，並自動選擇最合適者
+    async function getAvailableModelList(apiKey) {
+      const defaultCandidates = [
+        "gemini-2.5-flash",
+        "gemini-2.0-flash",
+        "gemini-2.0-flash-exp",
+        "gemini-1.5-flash-8b",
+        "gemini-1.5-flash"
+      ];
+
+      try {
+        const listUrl = `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`;
+        const res = await fetch(listUrl, {
+          headers: { "x-goog-api-key": apiKey }
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.models && data.models.length > 0) {
+            const supported = data.models
+              .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"))
+              .map(m => m.name.replace("models/", ""));
+            
+            // 挑選最佳優先序
+            for (const preferred of defaultCandidates) {
+              if (supported.includes(preferred)) {
+                return [preferred, ...supported.filter(m => m !== preferred)];
+              }
+            }
+            if (supported.length > 0) return supported;
+          }
+        }
+      } catch (e) {
+        console.warn("無法取得線上模型列表，使用預設候選模型：", e);
+      }
+      return defaultCandidates;
+    }
+
+    // 核心 API 呼叫函式
     async function callGeminiApi(promptText, images, apiKey) {
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+      const candidateModels = await getAvailableModelList(apiKey);
+
       const systemInstruction = `你是一位具備台灣「一般業甲種職業安全衛生業務主管」資格的資深安衛顧問。
 請審視使用者提供的作業資訊（包含文字現況與現場照片），特別檢視「現有安全措施」是否存在盲點與不足，並嚴格以純 JSON 格式回應，不得輸出額外 Markdown 語法或字元：
 {
@@ -574,14 +595,11 @@
   "ppe": "個人防護具規格要求，多條請以 1. 2. 格式分列"
 }`;
 
-      const contents = [{
-        role: "user",
-        parts: [{ text: `${systemInstruction}\n\n【巡檢資料】:\n${promptText}` }]
-      }];
+      const userParts = [{ text: `${systemInstruction}\n\n【巡檢資料】:\n${promptText}` }];
 
       if (images && images.length > 0) {
         images.forEach(img => {
-          contents[0].parts.push({
+          userParts.push({
             inline_data: {
               mime_type: img.mimeType,
               data: img.data
@@ -590,20 +608,41 @@
         });
       }
 
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ contents })
+      const requestBody = JSON.stringify({
+        contents: [{ role: "user", parts: userParts }]
       });
 
-      if (!res.ok) {
-        throw new Error(`API 回應代碼: ${res.status}`);
+      let lastErrorDetail = "";
+
+      for (const model of candidateModels) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+        try {
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-goog-api-key": apiKey
+            },
+            body: requestBody
+          });
+
+          if (res.ok) {
+            const data = await res.json();
+            const rawText = data.candidates[0].content.parts[0].text;
+            const cleanJson = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
+            return JSON.parse(cleanJson);
+          } else {
+            const errText = await res.text();
+            lastErrorDetail = `[${model}] HTTP ${res.status}: ${errText}`;
+            console.warn(`模型 ${model} 呼叫未成功，自動嘗試下一個：`, lastErrorDetail);
+          }
+        } catch (netErr) {
+          lastErrorDetail = `[${model}] 網路錯誤: ${netErr.message}`;
+        }
       }
 
-      const data = await res.json();
-      const rawText = data.candidates[0].content.parts[0].text;
-      const cleanJson = rawText.replace(/```json/g, "").replace(/```/g, "").trim();
-      return JSON.parse(cleanJson);
+      throw new Error(lastErrorDetail || "所有探測之模型皆無法連線");
     }
 
     function generateLocalAnalysis(text) {
@@ -649,7 +688,6 @@
       }).join('');
     }
 
-    // 渲染報告介面（完整整合基本資訊表格）
     function renderResult(data, formInputs) {
       const banner = document.getElementById("riskBanner");
       const badge = document.getElementById("riskBadge");
@@ -686,14 +724,14 @@
       document.getElementById("scoreP").textContent = data.p;
       totalScoreEl.textContent = data.total;
 
-      // 【全新升級】：注入填寫之基本資訊到展示卡片中
+      // 基本資訊展示
       document.getElementById("infoCaseName").textContent = formInputs.caseName || "未填寫";
       document.getElementById("infoWorkLocation").textContent = formInputs.location || "未註明地點";
       document.getElementById("infoWorkContent").textContent = formInputs.content || "未填寫作業內容";
       document.getElementById("infoSafetyMeasures").textContent = formInputs.measures || "無特定現有措施／現場缺乏防護";
       document.getElementById("infoExtraNotes").textContent = formInputs.notes || "無特別備註事項";
 
-      // 照片存證區塊
+      // 現場存證照片
       const evidenceContainer = document.getElementById("reportEvidenceContainer");
       const evidenceImages = document.getElementById("reportEvidenceImages");
       if (uploadedImagesBase64 && uploadedImagesBase64.length > 0) {
@@ -709,7 +747,7 @@
         evidenceImages.innerHTML = "";
       }
 
-      // 法規條文
+      // 法規
       const regContainer = document.getElementById("regulationText");
       if (typeof data.regulations === 'string') {
         const regItems = data.regulations.split(/(?=\d+\.\s*\*?\*?)/).map(s => s.trim()).filter(Boolean);
@@ -728,7 +766,7 @@
         }
       }
 
-      // 缺失列表
+      // 缺失
       const unsafeList = document.getElementById("unsafeActsList");
       unsafeList.innerHTML = "";
       data.unsafeActs.forEach(act => {
@@ -738,7 +776,6 @@
         unsafeList.appendChild(li);
       });
 
-      // 三大控制對策
       document.getElementById("actionEngineering").innerHTML = formatNumberedCards(data.engineering, 'blue');
       document.getElementById("actionAdmin").innerHTML = formatNumberedCards(data.admin, 'amber');
       document.getElementById("actionPPE").innerHTML = formatNumberedCards(data.ppe, 'rose');
